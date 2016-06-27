@@ -735,7 +735,6 @@ def _wiki_request(params):
     time.sleep(int(wait_time.total_seconds()))
 
   r = requests.get(API_URL, params=params, headers=headers)
-  print(r.url)
 
   if RATE_LIMIT:
     RATE_LIMIT_LAST_CALL = datetime.now()
