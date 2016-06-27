@@ -386,9 +386,9 @@ class WikipediaPage(object):
       request = _wiki_request(query_params)
       html = request['query']['pages'][pageid]['revisions'][0]['*']
 
-      lis = BeautifulSoup(html).find_all('li')
+      lis = BeautifulSoup(html, "html.parser").find_all('li')
       filtered_lis = [li for li in lis if not 'tocsection' in ''.join(li.get('class', []))]
-      may_refer_to = [li.a.get_text() for li in filtered_lis if li.a]
+      may_refer_to = [li.get_text() for li in filtered_lis if li.a]
 
       raise DisambiguationError(getattr(self, 'title', page['title']), may_refer_to)
 
@@ -735,6 +735,7 @@ def _wiki_request(params):
     time.sleep(int(wait_time.total_seconds()))
 
   r = requests.get(API_URL, params=params, headers=headers)
+  print(r.url)
 
   if RATE_LIMIT:
     RATE_LIMIT_LAST_CALL = datetime.now()
