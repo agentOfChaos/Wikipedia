@@ -29,7 +29,7 @@ def set_lang(prefix):
   .. note:: Make sure you search for page titles in the language that you have set.
   '''
   global API_URL
-  API_URL = 'http://' + prefix.lower() + '.wikipedia.org/w/api.php'
+  API_URL = 'https://' + prefix.lower() + '.wikipedia.org/w/api.php'
 
   for cached_func in (search, suggest, summary):
     cached_func.clear_cache()
