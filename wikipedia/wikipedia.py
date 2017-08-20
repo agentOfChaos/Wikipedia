@@ -17,6 +17,7 @@ RATE_LIMIT = False
 RATE_LIMIT_MIN_WAIT = None
 RATE_LIMIT_LAST_CALL = None
 USER_AGENT = 'wikipedia (https://github.com/goldsmith/Wikipedia/)'
+REQUEST_TIMEOUT = None
 
 
 def set_lang(prefix):
@@ -45,6 +46,18 @@ def set_user_agent(user_agent_string):
   '''
   global USER_AGENT
   USER_AGENT = user_agent_string
+
+
+def set_request_timeout(timeout):
+  '''
+  Set the timeout to be used for all requests.
+
+  Arguments:
+
+  * timeout - (float) a number specifying time in seconds
+  '''
+  global REQUEST_TIMEOUT
+  REQUEST_TIMEOUT = timeout
 
 
 def set_rate_limiting(rate_limit, min_wait=timedelta(milliseconds=50)):
@@ -716,6 +729,7 @@ def _wiki_request(params):
   '''
   global RATE_LIMIT_LAST_CALL
   global USER_AGENT
+  global REQUEST_TIMEOUT
 
   params['format'] = 'json'
   if not 'action' in params:
@@ -734,7 +748,7 @@ def _wiki_request(params):
     wait_time = (RATE_LIMIT_LAST_CALL + RATE_LIMIT_MIN_WAIT) - datetime.now()
     time.sleep(int(wait_time.total_seconds()))
 
-  r = requests.get(API_URL, params=params, headers=headers)
+  r = requests.get(API_URL, params=params, headers=headers, timeout=REQUEST_TIMEOUT)
 
   if RATE_LIMIT:
     RATE_LIMIT_LAST_CALL = datetime.now()
